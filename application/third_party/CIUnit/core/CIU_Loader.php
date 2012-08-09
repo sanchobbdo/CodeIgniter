@@ -350,7 +350,7 @@ class CIU_Loader extends CI_Loader {
 	 */
 	public function helper($helpers = array())
 	{
-		foreach ($this->_ci_prep_filename($helpers, '_helper') as $helper)
+		foreach ($this->_ci_prep_filename($helper, '_helper') as $helper)
 		{
 			if (isset($this->_ci_helpers[$helper]))
 			{
