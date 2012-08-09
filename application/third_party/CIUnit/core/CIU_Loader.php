@@ -355,7 +355,7 @@ class CIU_Loader extends MY_Loader {
 	 * @param	mixed
 	 * @return	void
 	 */
-	public function helper($helpers = array())
+	public function helper($helper = array())
 	{
 		if (is_array($helper)) return $this->helpers($helper);
 		
