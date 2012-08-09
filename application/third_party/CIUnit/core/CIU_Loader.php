@@ -13,7 +13,7 @@
 * If you use MY_Loader, change the paraent class.
 */
 
-class CIU_Loader extends CI_Loader {
+class CIU_Loader extends MY_Loader {
 
 	/**
 	 * Load class
@@ -328,6 +328,13 @@ class CIU_Loader extends CI_Loader {
 	*/
 	public function view($view, $vars = array(), $return = FALSE)
 	{
+		list($path, $_view) = Modules::find($view, $this->_module, 'views/');
+		
+		if ($path != FALSE) {
+			$this->_ci_view_paths = array($path => TRUE) + $this->_ci_view_paths;
+			$view = $_view;
+		}
+			
 		if ($return === TRUE)
 		{
 			return parent::view($view, $vars, $return);
@@ -350,6 +357,19 @@ class CIU_Loader extends CI_Loader {
 	 */
 	public function helper($helpers = array())
 	{
+		if (is_array($helper)) return $this->helpers($helper);
+		
+		if (isset($this->_ci_helpers[$helper]))	return;
+
+		list($path, $_helper) = Modules::find($helper.'_helper', $this->_module, 'helpers/');
+		
+		if ($path)
+		{
+			Modules::load_file($_helper, $path);
+			$this->_ci_helpers[$_helper] = TRUE;
+			return;
+		}
+			
 		foreach ($this->_ci_prep_filename($helpers, '_helper') as $helper)
 		{
 			if (isset($this->_ci_helpers[$helper]))

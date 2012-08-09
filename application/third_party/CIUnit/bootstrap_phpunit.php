@@ -261,6 +261,8 @@ require_once ('PHPUnit/Autoload.php');
 // Load the CIUnit Framework
 require_once CIUPATH. 'libraries/CIUnit.php';
 
+require_once APPPATH.'third_party/MX/Controller.php';
+
 //=== and off we go ===
 $CI =& set_controller('CIU_Controller', CIUPATH . 'core/');
 $CI->load->add_package_path(CIUPATH);
