@@ -431,6 +431,68 @@ class CIU_Loader extends MY_Loader {
 	}
 
 	// --------------------------------------------------------------------
+	
+	/**
+	 * Load model
+	 * 
+	 * So hackish :s
+	 * 
+	 * @author Camilo Aguilar
+	 * @todo Something cleaner
+	 * @param	string	the name of the class
+	 * @param	string	name for the model
+	 * @param	bool	database connection
+	 * @return	void
+	 */
+	function model($model, $object_name = NULL, $connect = FALSE)
+	{
+		if (is_array($model)) return $this->models($model);
+
+		($_alias = $object_name) OR $_alias = basename($model);
+
+		if (in_array($_alias, $this->_ci_models, TRUE)) 
+			return CI::$APP->$_alias;
+			
+		/* check module */
+		list($path, $_model) = Modules::find(strtolower($model), $this->_module, 'models/');
+		
+		if ($path == FALSE) {
+			
+			if (empty(CI::$APP->$_alias))
+			{
+				CI::$APP->$_alias = '';
+			}
+						
+			/* check application & packages */
+			parent::model($model, $object_name, $connect);
+			
+			if (empty(CI::$APP->$_alias))
+			{
+				$CI =& get_instance();
+				CI::$APP->$_alias = $CI->$_alias;
+			}
+			
+		} else {
+			
+			class_exists('CI_Model', FALSE) OR load_class('Model', 'core');
+			
+			if ($connect !== FALSE AND ! class_exists('CI_DB', FALSE)) {
+				if ($connect === TRUE) $connect = '';
+				$this->database($connect, FALSE, TRUE);
+			}
+			
+			Modules::load_file($_model, $path);
+			
+			$model = ucfirst($_model);
+			CI::$APP->$_alias = new $model();
+			
+			$this->_ci_models[] = $_alias;
+		}
+		
+		return CI::$APP->$_alias;
+	}
+	
+	// --------------------------------------------------------------------
 
 	/*
 	* Can load a view file from an absolute path and
