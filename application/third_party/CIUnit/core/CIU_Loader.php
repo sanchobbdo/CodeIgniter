@@ -306,6 +306,11 @@ class CIU_Loader extends MY_Loader {
 				$CI->$classvar = new $name;
 			}
 		}
+		
+		if (empty(CI::$APP->$classvar))
+		{
+			CI::$APP->$classvar = $CI->$classvar;
+		}
 	}
 
 	// --------------------------------------------------------------------
