@@ -477,13 +477,8 @@ class CIU_Loader extends MY_Loader {
 		
 		if ($path == FALSE) {
 			
-			if (empty(CI::$APP->$_alias))
-			{
-				CI::$APP->$_alias = '';
-			}
-						
 			/* check application & packages */
-			parent::model($model, $object_name, $connect);
+			CI_Loader::model($model, $object_name, $connect);
 			
 			if (empty(CI::$APP->$_alias))
 			{
@@ -537,6 +532,12 @@ class CIU_Loader extends MY_Loader {
 
 	function reset()
 	{
+		$CI =& get_instance();
+		foreach ($this->_ci_models as $model)
+		{
+			unset($CI->$model);
+		}
+
 		$this->_ci_cached_vars = array();
 		$this->_ci_classes = array();
 		$this->_ci_loaded_files = array();
