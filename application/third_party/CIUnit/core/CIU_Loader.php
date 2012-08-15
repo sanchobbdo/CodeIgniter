@@ -432,6 +432,25 @@ class CIU_Loader extends MY_Loader {
 
 	// --------------------------------------------------------------------
 	
+	public function library($library = '', $params = NULL, $object_name = NULL)
+	{
+		if ($lib = parent::library($library, $params, $object_name))
+		{
+			$class = strtolower(basename($library));
+			($_alias = strtolower($object_name)) OR $_alias = $class;
+	
+			$CI =& get_instance();
+			if (empty($CI->$_alias))
+			{
+				$CI->$_alias = $lib;
+			}
+		}
+		
+		return $lib;
+	}
+	
+	// --------------------------------------------------------------------
+	
 	/**
 	 * Load model
 	 * 
@@ -487,6 +506,12 @@ class CIU_Loader extends MY_Loader {
 			CI::$APP->$_alias = new $model();
 			
 			$this->_ci_models[] = $_alias;
+		}
+		
+		$CI =& get_instance();
+		if (empty($CI->$_alias))
+		{
+			$CI->$_alias = CI::$APP->$_alias;
 		}
 		
 		return CI::$APP->$_alias;
